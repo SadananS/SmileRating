@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using HPSR.HPSRNavWS;
+using System.Data;
+using Telerik.Web.UI;
+using System.Security.Cryptography;
+using System.Collections;
+using System.Net.Mail;
+using System.Net;
+using System.Text;
+using System.Web.UI.HtmlControls;
+using HPSR;
+
+
+namespace HPSR.Faculty
+{
+    public partial class SmileyRating : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if(!IsPostBack)
+            {
+
+                DATABINDGRID();
+            }
+        }
+
+        private void DATABINDGRID()
+        {
+            try
+            {
+                 FeedbackSmiley objsm = new FeedbackSmiley();
+            FeedbackSmiley[] Feedsmiley = objWSDataReader.GetFeedback(HttpContext.Current.Session["LoginID"].ToString());
+            var qry = from S in Feedsmiley
+                    
+                      select new
+                      {
+                          //EntryNo = s.EntryNo,
+                          No = S.No,
+                          Employee_ID = S.Employee_ID,
+                          Full_Name = S.Full_Name,
+                          Date = S.Date,                     
+                          Company = S.Company,
+                          FeedBack = S.Feed_Back
+                      };
+            rgRating.DataSource = qry;
+            rgRating.DataBind();
+
+
+
+            }
+
+            catch(Exception ex)
+            {
+                this.Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Error Page , Data not found ')", true);      
+ 
+            }
+           
+        }
+    }
+}
